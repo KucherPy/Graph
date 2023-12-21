@@ -1,74 +1,83 @@
 import numpy as np
-
-def filling_list(ribs, directed):
-    m = 2
-    print("Введите пары ребер через enter")
-
-    RibsList = []
-
+def filling_list(ribs):
+    RibsList = [0] * ribs
     for i in range(ribs):
-        print("Следующая пара ребер")
-        rib_pair = [int(input()) for _ in range(m)]
-        RibsList.append(rib_pair)
-
-        if not directed:
-            RibsList.append([rib_pair[1], rib_pair[0]])
-
+        print("Введите ребро №", i + 1)
+        RibsList[i] = [int(input()), int(input())]
+    print("Пары вершин")
+    print(RibsList)
     return RibsList
 
 def adjacency_matrix(LenghtList, ribs, RibsList):
-    adjacency_matrix_list = np.zeros((LenghtList, LenghtList), dtype=int)
+    print("Матрица смежности")
+    adjacency_matrix_list = [0] * LenghtList
+    for i in range(LenghtList):
+        adjacency_matrix_list[i] = [0] * LenghtList
+
+    if flag == 1:
+        coefficient = -1
+    else:
+        coefficient = 1
 
     for i in range(ribs):
-        a, b = RibsList[i]
-        adjacency_matrix_list[a-1][b-1] = 1
+        a = RibsList[i][0]
+        b = RibsList[i][1]
+        if RibsList[i][0] != RibsList[i][1]:
+            adjacency_matrix_list[a - 1][b - 1] = 1
+            adjacency_matrix_list[b - 1][a - 1] = 1 * coefficient
 
+    print(np.matrix(adjacency_matrix_list))
     return adjacency_matrix_list
 
-def adjacency_list(LenghtList, RibsList):
-    adjacency_list_dict = {}
+def adjacency_list(adjacency_matrix_list, LenghtList, ribs):
+    print("Список смежности")
+    for i in range(LenghtList):
+        temp_list = [i+1]
+        for j in range(LenghtList):
+            a = j + 1
+            if adjacency_matrix_list[i][j] == 1:
+                temp_list.append(a)
 
-    for a, b in RibsList:
-        if a in adjacency_list_dict:
-            adjacency_list_dict[a].append(b)
-        else:
-            adjacency_list_dict[a] = [b]
+        print(np.array(temp_list))
+        temp_list.clear()
 
-    return adjacency_list_dict
+def incidence_matrix(LenghtList, ribs, RibsList,):
+    print("Матрица инцидентности")
+    incidence_matrix_list = [0] * LenghtList
+    for i in range(LenghtList):
+        incidence_matrix_list[i] = [0] * ribs
 
-def incidence_matrix(LenghtList, ribs, RibsList):
-    incidence_matrix_list = np.zeros((LenghtList, ribs), dtype=int)
+    if flag == 1:
+        coefficient = -1
+    else:
+        coefficient = 1
 
-    for i in range(ribs):
-        a, b = RibsList[i]
-        incidence_matrix_list[a-1][i] = 1
-        incidence_matrix_list[b-1][i] = -1
+    for i in range(ribs): # Столбец
+        a = RibsList[i][0] # 1
+        b = RibsList[i][1] #  4
+        incidence_matrix_list[a-1][i] = 1 # Строка
+        incidence_matrix_list[b-1][i] = 1 * coefficient
+    print(np.matrix(incidence_matrix_list))
 
-    return incidence_matrix_list
 
-RibsList = []
+
+print("Какой граф?\n 1 - Ориентированнай\n 2 - Неориентированный")
+flag = int(input())
 
 print("Введите количество ребер")
 ribs = int(input()) # ребра
 
-print("Выберите тип графа (1 - направленный, 0 - ненаправленный):")
-directed = bool(int(input()))
+RibsList = filling_list(ribs)
 
-RibsList = filling_list(ribs, directed)
 
 LenghtList = len(set(sum(RibsList, [])))
+print("Количество вершин ",LenghtList)
+
 
 adjacency_matrix_list = adjacency_matrix(LenghtList, ribs, RibsList)
-adjacency_list_dict = adjacency_list(LenghtList, RibsList)
-incidence_matrix_list = incidence_matrix(LenghtList, ribs, RibsList)
 
-print("Матрица смежности:")
-print(adjacency_matrix_list)
 
-print("Список смежности:")
-for vertex in adjacency_list_dict:
-    neighbors = adjacency_list_dict[vertex]
-    print(f"Вершина {vertex} смежна с вершинами: {neighbors}")
+adjacency_list(adjacency_matrix_list, LenghtList, ribs)
 
-print("Матрица инцидентности:")
-print(incidence_matrix_list)
+
+incidence_matrix(LenghtList, ribs, RibsList)
