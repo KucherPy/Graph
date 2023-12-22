@@ -67,14 +67,16 @@ def huffman(n, p):
 
     print(f"\n{p[n-1].sym}\t{p[n-1].pro}\t\t0")
 
-    for i in range(n - 2, -1, -1):
-        print(f"\n{p[i].sym}\t{p[i].pro}\t\t{'1' * temp}0")
+    for i in range(n - 2, 0, -1):
+        print(f"\n{p[i].sym}\t{p[i].pro:.2f}\t\t{'1' * temp}0")
         temp += 1
 
+    print(f"\n{p[0].sym}\t{p[0].pro}\t\t{'1' * (n - 1)}")
+
 def display(n, p):
-    print("\nМетод Шеннона-Фэно\nСимвол\tВероятность\tКод")
+    print("\nМетод Шеннона-Фано\nСимвол\tВероятность\tКод")
     for i in range(n):
-        print(f"\n{p[i].sym}\t{p[i].pro}\t\t{''.join(map(str, p[i].arr))}")
+        print(f"\n{p[i].sym}\t{p[i].pro:.2f}\t\t{''.join(map(str, p[i].arr))}")
 
 def main():
     n = int(input("Введите количество символов: "))
@@ -105,9 +107,8 @@ def main():
                 total -= p[i].pro
                 i -= 1
 
-        p[n - 1].pro = 1 - total
+        p[n - 1].pro = round(1 - total, 10)  # Round the last probability to avoid precision issues
         print(f"Вероятность символа {p[n-1].sym}: {p[n-1].pro:.2f}\n")
-
 
     else:
 
@@ -117,7 +118,6 @@ def main():
             x_i = int(input(f"Введите кол-во символа {p[i].sym}: "))
 
             p[i].pro = x_i
-
             total += p[i].pro
 
         for i in range(n):
